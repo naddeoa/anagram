@@ -122,8 +122,8 @@ class Database
 
   private function getDSN()
   {
-    $root = $_SERVER["DOCUMENT_ROOT"];
-    return "sqlite:../lib/words.sqlite3";
+    $root = $_SERVER["DOCUMENT_ROOT"]."../lib";
+    return "sqlite:$root/words.sqlite3";
   }
 
 }
