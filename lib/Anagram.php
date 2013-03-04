@@ -10,11 +10,13 @@ class Anagram{
 
   private $min;
   private $max;
+  private $used;
 
   public function __construct($input){
     $this->input = $input;
     $this->db = new Database();
     $this->words = array();
+    $this->used = array();
     $this->min = -1;
     $this->max = 9999;
   }
@@ -87,6 +89,8 @@ class Anagram{
       $this->saveIfWord($next);
 
 
+
+
       //unfortunately this is really slow.
 //      if( !$this->testIfWord($next)){
 //        $this->bails++;
@@ -98,7 +102,8 @@ class Anagram{
       //and we are passing "i" as the new sofar. The input will
       //be everything in diff that isn't the current diff letter.
       //so if diff[j]=f, then we pass "sh" as the new input (second param).
-      $this->permute($next, $diff);
+      if(!$this->isUsed($next))
+        $this->permute($next, $diff);
 
     }
 
@@ -113,14 +118,16 @@ class Anagram{
     $dictionary = $this->getDictionary();
     if($dictionary[$w] == 1)
       $this->words[$w] = 1;
-//    return;
 
-//    $word = $this->db->getWord($w);
-//    if($word !== null){
-//      $this->words[$word] = 1;
-//    }
   }
 
+
+  private function isUsed($w){
+    if(isset($this->used[$w]))
+      return true;
+    $this->used[$w] = 1;
+    return false;
+  }
 
   private function testIfWord($w){
     $num = $this->db->testWord($w);
