@@ -29,6 +29,7 @@ class Database
     return $sql;
   }
   
+
   private function getSqlBindString($row)
   {
     $columns = array_keys($row);
@@ -37,6 +38,45 @@ class Database
       $sql .= ",?";
     }
     return $sql;
+  }
+
+
+  public function testWord($word){
+    $db = $this->connect();
+    
+    $stmnt = $db->prepare("SELECT count(1) as num FROM words where word like '$word%'");
+
+    $str = null;
+    $stmnt->execute();
+    while($row = $stmnt->fetch(PDO::FETCH_ASSOC)){
+      $str = $row["num"];
+    }
+
+
+    $this->disconnect();
+    return $str;
+  }
+
+
+  /**
+    Get an associative array of all of the words in the dictionary.
+    */
+  public function getDictionary(){
+    $db = $this->connect();
+    
+    if($this->stmnt == null)
+      $this->stmnt = $db->prepare("SELECT word FROM words");
+
+    $dictionary = array();
+    $this->stmnt->execute();
+
+    while($row = $this->stmnt->fetch(PDO::FETCH_ASSOC)){
+      $dictionary[$row["word"]] = 1;
+    }
+
+    $this->disconnect();
+    return $dictionary;
+
   }
 
 
